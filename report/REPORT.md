@@ -17,9 +17,9 @@
 
 > Dự đoán điều kiện nào đạt điểm cao nhất trên **tác vụ đánh giá** và vì sao. Nêu căn cứ từ phân loại lỗi (mục 4) và từ tài liệu tham khảo. Điền cả ba dòng; `verify_freeze.py` kiểm tra điều này.
 
-- H1 (subagents so với baseline):
-- H2 (skills-auto so với baseline):
-- H3 (tác vụ học so với tác vụ đánh giá):
+- H1 (subagents so với baseline): trên tác vụ đánh giá, `subagents` KHÔNG cao hơn `baseline` (điểm trung bình chênh trong khoảng ±0,10) nhưng tốn token nhiều hơn (ít nhất 1,3 lần). Căn cứ: trên tác vụ học hai điều kiện có cùng 16/18 check kỹ thuật và 0/9 check quy ước (điểm trung bình 0,580 so với 0,597); worker không biết quy ước Acme nhiều hơn coordinator; lời giao việc làm rơi thông tin (data-learn: lời giao cho `implementer` thiếu ranh giới Q1 theo UTC nên `north_q1_revenue` và `north_q1_orders` sai, `reviewer` vẫn xác nhận); token trung bình 384k so với 277k; bài viết về hệ đa tác tử của Anthropic ghi nhận đa tác tử tốn khoảng 15 lần token so với hội thoại thường.
+- H2 (skills-auto so với baseline): `skills-auto` đạt điểm trung bình cao nhất trên tác vụ đánh giá, cao hơn `baseline` khoảng 0,10 đến 0,25, nhờ các quy ước của tác vụ học được dùng lại; nhưng không đạt tối đa vì quy ước MỚI của tác vụ đánh giá không có trong skill và tác tử chỉ làm theo skill một phần khi đề bài nói khác (Phần 3.4: logs-learn vẫn ghi `payment-service` như ví dụ trong đề). Căn cứ: 9/11 check thất bại của baseline trên tác vụ học là quy ước ẩn (nhóm E); ở Phần 3.4 skill nâng điểm trung bình tác vụ học từ 0,597 lên 0,813 và mỗi lần chạy đều đọc đúng skill (`skills_read = 1`). SkillsBench cho thấy skill tự sinh trung bình không có lợi, nhưng skill ở đây chép lại quy ước cụ thể từ phản hồi nên gần với skill do con người biên soạn (+16 điểm phần trăm).
+- H3 (tác vụ học so với tác vụ đánh giá): mức cải thiện của `skills-auto` so với `baseline` trên tác vụ đánh giá NHỎ hơn trên tác vụ học (+0,216), và check quy ước mới của tác vụ đánh giá trượt ở cả ba điều kiện. Căn cứ: SkillEvolBench ghi nhận lợi ích trên tác vụ học thường không chuyển sang tác vụ mới; skill dữ liệu có chi tiết riêng của tác vụ học (giá trị `-999`, chuẩn hóa tên vùng) và thiếu tên cột của `clean.csv`, dấu hiệu quá khớp; dữ liệu đánh giá khác dữ liệu học.
 
 ## 3. Làm quen Deep Agents (Phần 0.3)
 
