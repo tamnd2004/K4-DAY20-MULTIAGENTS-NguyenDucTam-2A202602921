@@ -113,6 +113,10 @@ def run_task(task_id: str, condition: str, results_dir="results", model=None, re
         record["skills_read"] = len({p.split("skills/", 1)[1].split("/")[0] for p in read_paths if "skills/" in p} - {""})
         record["skills_modified"] = hash_dir(sandbox / "skills") != skills_before
         record["final_message"] = final.text if final is not None else ""
+        record["finish_reason"] = final.response_metadata.get("finish_reason") if final is not None else None
+        if record["error"] is None and final is not None and not final.text.strip():
+            # Mô hình kết thúc bằng tin nhắn rỗng (vd. Gemini MALFORMED_FUNCTION_CALL): lỗi phía API, không phải câu trả lời.
+            record["error"] = f"EmptyModelResponse: run ended on an empty model message (finish_reason={record['finish_reason']})"
 
         g = grade(task, sandbox / "workspace")                 # chấm trên workspace đã bị tác tử sửa
         record.update({k: g[k] for k in ("score", "passed", "total", "checks")})
